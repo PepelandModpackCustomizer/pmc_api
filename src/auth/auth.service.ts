@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
-import { DatabaseService } from "../database/db.service.js";
+import { DatabaseService } from "../database/db.service";
 import DiscordOAuth from "easy-discord-oauth";
-import { Permissions, User } from "../database/types.js";
+import { Permissions, User } from "../database/types";
 
 @Injectable()
 export class AuthService {

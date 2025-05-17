@@ -1,7 +1,7 @@
 import {Module} from "@nestjs/common";
-import {AuthController} from "./auth.controller.js";
-import {AuthService} from "./auth.service.js";
-import {DatabaseService} from "../database/db.service.js";
+import {AuthController} from "./auth.controller";
+import {AuthService} from "./auth.service";
+import {DatabaseService} from "../database/db.service";
 
 @Module({
     providers: [AuthService, DatabaseService],

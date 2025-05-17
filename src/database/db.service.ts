@@ -1,6 +1,6 @@
 import {Injectable} from "@nestjs/common";
 import {neon, NeonQueryFunction} from "@neondatabase/serverless";
-import { User, Permissions, UserIntegrations } from "./types.js";
+import { User, Permissions, UserIntegrations } from "./types";
 
 
 @Injectable()
