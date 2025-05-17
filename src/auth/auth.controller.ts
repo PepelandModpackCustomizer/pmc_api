@@ -13,10 +13,4 @@ export class AuthController {
             throw new HttpException("User-Agent header is required for this endpoint", HttpStatus.BAD_REQUEST)
         }
     }
-
-    @Get('/test')
-    async getTest() {
-        const user = await this.authService.registerDiscord(928236388615335947n)
-        console.log(user)
-    }
 }
