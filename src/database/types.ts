@@ -14,7 +14,8 @@ export class Permissions {
 
     private _permissions: number = 0
 
-
+    public static DEFAULT = new Permissions()
+    public static ALL = new Permissions().setAll(true)
 
     public set(key: string, value: boolean): Permissions {
         if (!PermissionsMap.includes(key)) {
@@ -46,12 +47,26 @@ export class Permissions {
         return binary[index] == "1";
     }
 
+    public setAll(value: boolean): Permissions {
+        let binary = "";
+        while (binary.length < PermissionsMap.length) {
+            binary += "1";
+        }
+        this._permissions = parseInt(binary, 2)
+        return this;
+    }
+
     public getAll(): number {
         return this._permissions;
     }
 }
 
 export interface User {
-    user_id: string,
+    user_id: bigint,
     permissions: Permissions
+}
+
+export interface UserIntegrations {
+    user_id: bigint,
+    discord_id?: bigint
 }
