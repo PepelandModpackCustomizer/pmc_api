@@ -3,11 +3,14 @@ import { DatabaseService } from "../database/db.service";
 import DiscordOAuth from "easy-discord-oauth";
 import { Permissions, User } from "../database/types";
 import { v4 as uuidv4 } from "uuid";
-import jwt from "jsonwebtoken";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly dbService: DatabaseService) {}
+    constructor (
+        private readonly jwtService: JwtService,
+        private readonly dbService: DatabaseService
+    ) {}
 
     private async generateTokens(
         payload: object,
@@ -16,25 +19,21 @@ export class AuthService {
         expires_in: number,
         expires_in_refresh: number
     ) {
-        const secret = process.env.JWT_SECRET;
-        if (!secret) throw new HttpException("Internal Server Error", 500);
-        const access = jwt.sign(
+        const access = this.jwtService.sign(
             {
                 ...payload,
                 type: "access"
             },
-            secret,
             {
                 jwtid: jti,
                 subject: sub,
                 expiresIn: expires_in
             }
         );
-        const refresh = jwt.sign(
+        const refresh = this.jwtService.sign(
             {
                 type: "refresh"
             },
-            secret,
             {
                 jwtid: jti,
                 subject: sub,
@@ -55,7 +54,6 @@ export class AuthService {
                 "User does not exist",
                 HttpStatus.NOT_FOUND
             );
-
         const tokenScope = scope ?? user.permissions;
         if (scope) {
             if (tokenScope.getAll() > user.permissions.getAll()) {
@@ -74,6 +72,7 @@ export class AuthService {
             const result = await this.dbService.getSession(jti);
             exists = result != undefined;
         } while (exists);
+        console.log(`Jti: ${jti}`)
         const [accessToken, refreshToken] = await this.generateTokens(
             {},
             jti,
@@ -106,6 +105,7 @@ export class AuthService {
         const discordUserId = BigInt(
             (await DiscordOAuth.User.getCurrentUser(discordToken)).id
         );
+        console.log(`Discord user id: ${discordUserId}`)
         const integrations =
             await this.dbService.getUserIntegrationsDiscord(discordUserId);
         let userId;
@@ -114,10 +114,12 @@ export class AuthService {
         } else {
             userId = integrations.user_id;
         }
+        console.log(`User id: ${userId}`)
         const [accessToken, refreshToken] = await this.createSession(
             userId,
             userAgent
         );
+        console.log(`Session created ${accessToken}; ${refreshToken}`)
         return [accessToken, refreshToken];
     }
 

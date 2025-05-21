@@ -34,5 +34,10 @@ export class AuthController {
             code,
             headerUserAgent
         );
+        return res
+            .cookie("access_token", accessToken, { maxAge: 60*20 })
+            .cookie("refresh_token", refreshToken, { maxAge: 60*60*24*2 })
+            .json({ access_token: accessToken, refresh_token: refreshToken })
+        ;
     }
 }
