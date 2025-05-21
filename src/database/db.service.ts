@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { neon, NeonQueryFunction } from "@neondatabase/serverless";
-import { User, Permissions, UserIntegrations } from "./types";
+import { User, Permissions, UserIntegrations, Session } from "./types";
 
 @Injectable()
 export class DatabaseService {
@@ -151,6 +151,15 @@ export class DatabaseService {
                 [user_id, value]
             );
         }
+    }
+
+    async getSession(jti: string) {
+        const res = await this.getSingleRow("*", "Sessions", "jti = $1", [jti])
+        return res as Session;
+    }
+
+    async createSession(jti: string, user_id: bigint, user_agent: string) {
+        await this.insertRow("Sessions", "jti, user_id, user_agent", "$1, $2, $3", [jti, user_id, user_agent])
     }
     // </auth>
 }

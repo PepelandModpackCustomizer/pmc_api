@@ -68,3 +68,9 @@ export interface UserIntegrations {
     user_id: bigint;
     discord_id?: bigint;
 }
+
+export interface Session {
+    jti: string,
+    user_id: bigint,
+    user_agent: string
+}
