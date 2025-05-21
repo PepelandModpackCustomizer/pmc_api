@@ -70,7 +70,7 @@ export interface UserIntegrations {
 }
 
 export interface Session {
-    jti: string,
-    user_id: bigint,
-    user_agent: string
+    jti: string;
+    user_id: bigint;
+    user_agent: string;
 }

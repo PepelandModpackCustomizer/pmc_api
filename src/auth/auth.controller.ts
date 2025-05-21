@@ -2,7 +2,8 @@ import {
     Controller,
     Get,
     HttpException,
-    HttpStatus, Query,
+    HttpStatus,
+    Query,
     Req,
     Res
 } from "@nestjs/common";
@@ -14,7 +15,11 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Get("/discord/")
-    async loginDiscord(@Req() req: Request, @Res() res: Response, @Query("code") code: string) {
+    async loginDiscord(
+        @Req() req: Request,
+        @Res() res: Response,
+        @Query("code") code: string
+    ) {
         const headerUserAgent = req.headers["user-agent"];
         if (!headerUserAgent) {
             throw new HttpException(
@@ -25,6 +30,9 @@ export class AuthController {
         if (!code) {
             throw new HttpException("Invalid code", HttpStatus.BAD_REQUEST);
         }
-        const [accessToken, refreshToken] = await this.authService.loginDiscord(code, headerUserAgent);
+        const [accessToken, refreshToken] = await this.authService.loginDiscord(
+            code,
+            headerUserAgent
+        );
     }
 }
